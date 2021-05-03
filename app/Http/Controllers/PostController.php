@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -14,8 +17,14 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::where('title','!=','')->orderBy('created_at','desc')->get();
-        $count = Post::where('title','!=','')->count();
+        // $posts = Post::where('title','!=','')->orderBy('created_at','desc')->get();
+       // $posts = DB::table('users')
+            // ->leftJoin('posts', 'users.id', '=', 'posts.user_id')
+            // ->get();
+
+        $user = User::find(Auth::id()); 
+        $posts = $user->posts()->orderBy('created_at','desc')->get();
+        $count = $user->posts()->where('title','!=','')->count();
         return view('posts.index', compact('posts', 'count'));
     }
 
@@ -61,6 +70,7 @@ class PostController extends Controller
         $post = new Post();
         $post->fill($request->all());
         $post->img = $fileNameToStore;
+        $post->user_id = auth()->user()->id;
         if($post->save()){
             $message = "Successfully save";
         }
@@ -77,7 +87,8 @@ class PostController extends Controller
     public function show(Post $post)
     {
         $post = Post::find($post->id);
-        return view('posts.show', compact('post'));
+        $comments = $post->comments;
+        return view('posts.show', compact('post','comments'));
     }
 
     /**
@@ -107,6 +118,7 @@ class PostController extends Controller
         
         $post = Post::find($post->id);
         $post->fill($request->all());
+        $post->user_id = auth()->user()->id;
         $post->save();
 
         return redirect('/posts');
