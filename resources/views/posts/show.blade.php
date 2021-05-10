@@ -12,13 +12,23 @@
                         <br>
                         Title: {{ $post->title }} <br>
                         Description: {{ $post->description }} <br>
-                        Created At: {{ $post->created_at }}  <br>
+                        Created At: {{ $post->created_at->diffForHumans() }}  <br>
                         @if ($post->img != '')
                          Image: 
                         <img src="{{ asset('/storage/img/'.$post->img) }}">
                         @endif
                         
                         @include('/posts/comments')
+                        <h4>Share Post</h4>
+                        <form method="post" action="{{ route('post.share', $post) }}">
+                            @csrf
+                            <div class="form-group">
+                                <input type="text" name="email" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" class="btn btn-warning" value="Share" />
+                            </div>
+                        </form>
                 </div>
             </div>
         </div>

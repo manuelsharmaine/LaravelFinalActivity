@@ -49,7 +49,7 @@
                                     <a href="{{ route('posts.show', $post->id) }}" class="btn btn-primary">View Post</a>
                                 </div>
                                 <div class="card-footer">
-                                    <small class="text-muted">Last updated {{ $post->updated_at }}</small>
+                                    <small class="text-muted">Last updated {{ $post->updated_at->diffForHumans() }}</small>
                                  </div>
                         </div>
                         

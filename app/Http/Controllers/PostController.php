@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\User;
+use App\Mail\SharePostMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
+
 
 class PostController extends Controller
 {
@@ -85,7 +89,7 @@ class PostController extends Controller
     {
         $post = Post::find($post->id);
         $comments = $post->comments;
-   
+      
         return view('posts.show', compact('post','comments'));
     }
 
@@ -153,5 +157,12 @@ class PostController extends Controller
         $post = Post::withTrashed()->find($id)->restore();
         
         return redirect('/posts');
+    }
+    public function share(Request $request, Post $post){
+
+        if($request->email){
+            Mail::to($request->email)->send(new SharePostMail($post));
+        }
+        return back();
     }
 }
