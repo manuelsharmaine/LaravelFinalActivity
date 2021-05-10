@@ -19,6 +19,16 @@
                         @endif
                         
                         @include('/posts/comments')
+                        <h4>Share Post</h4>
+                        <form method="POST" action="{{ route('post.share', $post) }}">
+                               @csrf     
+                            <div class="form-group">
+                                <input type="email" name="email" class="form-control">                            
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="share" class="btn btn-info" placeholder="Email">                            
+                            </div>
+                        </form>
                 </div>
             </div>
         </div>

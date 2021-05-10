@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SharePostMail;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class PostController extends Controller
 {
@@ -69,6 +71,7 @@ class PostController extends Controller
         $post->img = $fileNameToStore;
         $post->user_id = auth()->user()->id;
         if($post->save()){
+            Mail::to(auth()->user()->email)->send(new SharePostMail($post));
             $message = "Successfully save";
         }
 
@@ -153,5 +156,14 @@ class PostController extends Controller
         $post = Post::withTrashed()->find($id)->restore();
         
         return redirect('/posts');
+    }
+
+    public function share(Request $request, Post $post)
+    {
+     
+        if($request->email){
+            Mail::to($request->email)->send(new SharePostMail($post));
+        }
+  
     }
 }
