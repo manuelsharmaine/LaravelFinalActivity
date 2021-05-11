@@ -13,6 +13,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
+
+
+Auth::routes();
+Route::get('/home', function(){
+    return redirect('/posts');
 });
+
+Route::get('/delete-blank-post', [App\Http\Controllers\PostController::class, 'deleteBlank']);
+Route::get('/posts-archive', [App\Http\Controllers\PostController::class, 'archive']);
+Route::get('/posts/{id}/restore', [App\Http\Controllers\PostController::class, 'restore']);
+Route::post('/posts/{post}/share', [App\Http\Controllers\PostController::class, 'share'])->name('post.share');
+Route::resource('/posts', App\Http\Controllers\PostController::class);
+Route::resource('/comments', App\Http\Controllers\CommentController::class);
